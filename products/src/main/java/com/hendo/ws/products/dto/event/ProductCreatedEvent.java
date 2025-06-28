@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class ProductCreatedEvent {
     @Schema(description = "Product title", example = "iPhone 15 Pro", required = true)
-    private String title;
+    private String titler;
 
     @Schema(description = "Product price", example = "999.99", required = true)
     private BigDecimal price;
