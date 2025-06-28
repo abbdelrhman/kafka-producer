@@ -12,6 +12,9 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Schema(description = "kafka event for product creation")
 public class ProductCreatedEvent {
+    @Schema(description = "the unique identifier of the created product")
+    private String productId;
+
     @Schema(description = "Product title", example = "iPhone 15 Pro", required = true)
     private String title;
 
