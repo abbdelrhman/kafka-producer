@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "kafka event for product creation")
 public class ProductCreatedEvent {
     @Schema(description = "Product title", example = "iPhone 15 Pro", required = true)
     private String title;
