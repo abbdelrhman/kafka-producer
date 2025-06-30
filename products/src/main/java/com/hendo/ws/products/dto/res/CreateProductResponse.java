@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "the response of product creation")
+@Schema(description = "Response object for product creation operation")
 public class CreateProductResponse {
 
-    @Schema(description = "the unique identifier of the created product")
+    @Schema(description = "Unique identifier of the created product")
     private String productId;
 }
