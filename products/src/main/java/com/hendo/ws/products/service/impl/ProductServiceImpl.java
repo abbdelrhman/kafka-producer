@@ -21,9 +21,6 @@ import java.util.UUID;
 public class ProductServiceImpl implements ProductService {
 
     @Autowired
-    private ProductMapper productMapper;
-
-    @Autowired
     KafkaTemplate<String, ProductCreatedEvent> kafkaTemplate;
 
     @Autowired
@@ -37,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
         String productId = UUID.randomUUID().toString();
 
         // Map CreateProductRequest to ProductCreatedEvent using MapStruct
-        ProductCreatedEvent productCreatedEvent = productMapper.toProductCreatedEvent(createProductRequest,
+        ProductCreatedEvent productCreatedEvent = ProductMapper.INSTANCE.toProductCreatedEvent(createProductRequest,
                 productId);
 
         // TODO: Add actual product creation logic here
