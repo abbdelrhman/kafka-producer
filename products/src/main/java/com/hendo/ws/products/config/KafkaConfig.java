@@ -50,6 +50,11 @@ public class KafkaConfig {
     @Value("${spring.kafka.producer.properties.request.timeout.ms}")
     private String requestTimeoutMs;
 
+    @Value("${spring.kafka.producer.properties.enable.idempotence}")
+    private Boolean idempotence;
+
+    @Value("${spring.kafka.producer.properties.max.in.flight.requests.per.connection}")
+    private Integer maxInFlightRequestsPerConnection;
     @Bean
     NewTopic createTopic() {
         return TopicBuilder
@@ -70,6 +75,9 @@ public class KafkaConfig {
         props.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, deliveryTimeoutMs);
         props.put(ProducerConfig.LINGER_MS_CONFIG, lingerMs);
         props.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, requestTimeoutMs);
+        props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG,idempotence); // it is true by default
+        props.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION,maxInFlightRequestsPerConnection);
+//        props.put(ProducerConfig.RETRIES_CONFIG,Integer.MAX_VALUE);
         return props;
     }
 
