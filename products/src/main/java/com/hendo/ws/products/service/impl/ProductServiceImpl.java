@@ -3,10 +3,13 @@ package com.hendo.ws.products.service.impl;
 import com.hendo.ws.products.dto.event.ProductCreatedEvent;
 import com.hendo.ws.products.dto.req.CreateProductRequest;
 import com.hendo.ws.products.dto.res.CreateProductResponse;
+import com.hendo.ws.products.entity.Product;
 import com.hendo.ws.products.exception.ErrorEnum;
 import com.hendo.ws.products.exception.KafkaProducerException;
 import com.hendo.ws.products.mapper.ProductMapper;
+import com.hendo.ws.products.repository.ProductRepository;
 import com.hendo.ws.products.service.ProductService;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,20 +30,25 @@ public class ProductServiceImpl implements ProductService {
     @Value("${kafka.topic.product-created.name}")
     private String productCreatedTopicName;
 
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Transactional
     @Override
     public CreateProductResponse createProduct(CreateProductRequest createProductRequest) {
 
-        // Generate a unique product ID
-        String productId = UUID.randomUUID().toString();
+        // Create and save the product entity (ID will be auto-generated)
+        Product product = ProductMapper.INSTANCE.toProductEntity(createProductRequest);
+        Product savedProduct = productRepository.saveAndFlush(product);
+
+        // Get the auto-generated UUID from the saved entity
+        String productId = savedProduct.getId().toString();
 
         // Map CreateProductRequest to ProductCreatedEvent using MapStruct
         ProductCreatedEvent productCreatedEvent = ProductMapper.INSTANCE.toProductCreatedEvent(createProductRequest,
                 productId);
 
-        // TODO: Add actual product creation logic here
-        // TODO: Publish the ProductCreatedEvent to Kafka
-        // kafkaTemplate.send takes the following -> topicName, key, value
-
+        // Publish the ProductCreatedEvent to Kafka
         try {
             SendResult<String, ProductCreatedEvent> resultCompletableFuture = kafkaTemplate
                     .send(productCreatedTopicName, productId, productCreatedEvent).get();
